@@ -3,6 +3,7 @@
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\api\V1\CourseController;
 use App\Http\Controllers\api\V1\CategoryController;
 
@@ -19,5 +20,5 @@ Route::group(["prefix"=>"V1"],function (){
 
     Route::apiResource('Categories',CategoryController::class);
     
-    // Route::apiResource('Tags',TagController::class);
+    Route::apiResource('Tags',TagController::class);
 });

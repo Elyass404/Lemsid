@@ -1,12 +1,16 @@
 <?php
 
 namespace App\Providers;
+
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Repositories\CourseRepository;
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\CategoryRepository;
 use Illuminate\Support\Facades\RateLimiter;
 use App\Repositories\Interfaces\CourseRepositoryInterface;
+use App\Repositories\Interfaces\CategoryRepositoryInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,6 +20,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(CourseRepositoryInterface::class, CourseRepository::class);
+        $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
     }
 
     /**
