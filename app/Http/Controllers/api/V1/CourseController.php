@@ -29,8 +29,15 @@ class CourseController extends Controller
 
     public function store(CourseRequest $request): JsonResponse
     {
-        
-        return response()->json($this->courseRepository->create($request->validated()), 201);
+        $validatedData = $request->validated();
+
+        $tags = $validatedData["tags"] ?? [];
+
+        $course=$this->courseRepository->create($validatedData);
+
+        $course->tags()->sync($tags);
+
+        return response()->json($course, 201);
     }
 
     public function update(CourseRequest $request, $id): JsonResponse

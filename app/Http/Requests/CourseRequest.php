@@ -27,6 +27,8 @@ class CourseRequest extends FormRequest
             'content' => 'required|string',
             'mentor_id' => 'required|integer|exists:users,id',
             'category_id' => 'required|integer|exists:categories,id',
+            'tags' => 'array', // Tags should be an array
+            'tags.*' => 'integer|exists:tags,id',
             'thumbnail' => 'nullable|string'
         ];
     }
