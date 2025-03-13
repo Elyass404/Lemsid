@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\api\V1;
 
 use App\Models\Category;
-use App\Http\Requests\StoreCategoryRequest;
-use App\Http\Requests\UpdateCategoryRequest;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreCategoryRequest;
+
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Repositories\Interfaces\CategoryRepositoryInterface;
 
 class CategoryController extends Controller
@@ -21,9 +24,7 @@ class CategoryController extends Controller
     public function index()
     {
         //
-        return response()->json(
-            $this->categoryRepository->getAll(),
-        );
+        return response()->json($this->categoryRepository->getAll());
     }
 
     /**
@@ -37,17 +38,28 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCategoryRequest $request)
-    {
-        //
-    }
+    public function store(Request $request): JsonResponse
+{
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'parent_id' => 'nullable|exists:categories,id', // For subcategories
+    ]);
+
+    $category = $this->categoryRepository->create($validatedData);
+
+    return response()->json([
+        'message' => 'Category created successfully',
+        'category' => $category
+    ], 201);
+}
 
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show($id) : JsonResponse
     {
-        //
+        return response()->json($this->categoryRepository->getById($id));
+        
     }
 
     /**
