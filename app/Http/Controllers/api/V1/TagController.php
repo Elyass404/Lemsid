@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\V1;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\TagRequest;
 use Illuminate\Http\JsonResponse;
 use App\Repositories\TagRepository;
 use App\Http\Controllers\Controller;
@@ -29,22 +30,16 @@ class TagController extends Controller
         return response()->json($this->tagRepository->getById($id));
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(TagRequest  $request): JsonResponse
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255|unique:tags,name',
-        ]);
 
-        return response()->json($this->tagRepository->create($data), 201);
+        return response()->json($this->tagRepository->create($request->validated()), 201);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(TagRequest $request, $id): JsonResponse
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255|unique:tags,name,' . $id,
-        ]);
-
-        return response()->json($this->tagRepository->update($id, $data));
+        $tag = $this->tagRepository->update($id, $request->validated());
+        return response()->json($tag);
     }
 
     public function destroy($id): JsonResponse
