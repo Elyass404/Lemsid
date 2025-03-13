@@ -3,9 +3,10 @@
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TagController;
 use App\Http\Controllers\api\V1\CourseController;
 use App\Http\Controllers\api\V1\CategoryController;
+use App\Http\Controllers\api\V1\TagController;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();

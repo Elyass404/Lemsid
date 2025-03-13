@@ -69,19 +69,14 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id) : JsonResponse
+    public function update(StoreCategoryRequest $request, $id) : JsonResponse
 {
-    // Validate the incoming request data
-    $validated = $request->validate([
-        'name' => 'required|string|max:255', // You can add more validation as needed
-        'parent_id' => 'nullable|exists:categories,id', // Make sure the parent_id exists in the categories table, if provided
-    ]);
 
     // Find the category by ID
     $category = $this->categoryRepository->getById($id);
 
-    // Update the category
-    $category->update($validated);
+    // Update the category with the validated data
+    $category->update($request->validated());
 
     // Return the updated category as a JSON response
     return response()->json($category);
@@ -90,8 +85,16 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
-    {
-        //
-    }
+    public function destroy($id) : JsonResponse
+{
+    // Find the category by ID
+    $category = $this->categoryRepository->getById($id);
+
+    // Delete the category
+    $category->delete();
+
+    // Return a success response
+    return response()->json(['message' => 'Category deleted successfully'], 200);
+}
+
 }

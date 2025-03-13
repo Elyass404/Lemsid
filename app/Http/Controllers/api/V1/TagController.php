@@ -1,48 +1,55 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api\V1;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use App\Repositories\TagRepository;
+use App\Http\Controllers\Controller;
+use App\Repositories\Interfaces\TagRepositoryInterface;
 
 class TagController extends Controller
 {
+
+    protected TagRepository $tagRepository;
+    public function __construct(TagRepository $tagRepository)
+    {
+        $this->tagRepository = $tagRepository;
+    }
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        return response()->json($this->tagRepository->getAll());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function show($id): JsonResponse
     {
-        //
+        return response()->json($this->tagRepository->getById($id));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function store(Request $request): JsonResponse
     {
-        //
+        $data = $request->validate([
+            'name' => 'required|string|max:255|unique:tags,name',
+        ]);
+
+        return response()->json($this->tagRepository->create($data), 201);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id): JsonResponse
     {
-        //
+        $data = $request->validate([
+            'name' => 'required|string|max:255|unique:tags,name,' . $id,
+        ]);
+
+        return response()->json($this->tagRepository->update($id, $data));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy($id): JsonResponse
     {
-        //
+        $this->tagRepository->delete($id);
+        return response()->json(['message' => 'Tag deleted successfully']);
     }
 }
