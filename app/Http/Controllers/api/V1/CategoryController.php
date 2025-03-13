@@ -38,14 +38,10 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreCategoryRequest $request): JsonResponse
 {
-    $validatedData = $request->validate([
-        'name' => 'required|string|max:255',
-        'parent_id' => 'nullable|exists:categories,id', // For subcategories
-    ]);
 
-    $category = $this->categoryRepository->create($validatedData);
+    $category = $this->categoryRepository->create($request->validated());
 
     return response()->json([
         'message' => 'Category created successfully',
@@ -73,10 +69,23 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategoryRequest $request, Category $category)
-    {
-        //
-    }
+    public function update(Request $request, $id) : JsonResponse
+{
+    // Validate the incoming request data
+    $validated = $request->validate([
+        'name' => 'required|string|max:255', // You can add more validation as needed
+        'parent_id' => 'nullable|exists:categories,id', // Make sure the parent_id exists in the categories table, if provided
+    ]);
+
+    // Find the category by ID
+    $category = $this->categoryRepository->getById($id);
+
+    // Update the category
+    $category->update($validated);
+
+    // Return the updated category as a JSON response
+    return response()->json($category);
+}
 
     /**
      * Remove the specified resource from storage.
