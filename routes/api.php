@@ -30,17 +30,26 @@ Route::group(["prefix"=>"V1"],function (){
     Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
     Route::get('/auth/user', [AuthController::class, 'user'])->middleware('auth:sanctum');
     // Route::get('/auth/login', [AuthController::class, 'index'])->name("login");
+
 Route::group(["prefix"=>"V2",'middleware' => ['auth:sanctum']],function (){
     
-    
-    Route::apiResource('Course',CourseController::class);
+    // Admin only routes
+    Route::middleware('role:admin')->group(function () {
+        Route::apiResource('Categories', CategoryController::class);
+        Route::apiResource('Tags', TagController::class);
+    });
+    // Admin and mentor routes
+    Route::middleware('role:admin, mentor')->group(function () {
+        Route::apiResource('Course', CourseController::class);
+    });
 
-    Route::apiResource('Categories',CategoryController::class);
-    
-    Route::apiResource('Tags',TagController::class);
+    // student only routes
+    Route::middleware('role:student')->group(function () {
+        Route::get('Course', [CourseController::class, 'index']);
+        
+    });
+
 
     Route::post('auth/refresh',[AuthController::class, "refreshToken"]);
-
-
     
 });

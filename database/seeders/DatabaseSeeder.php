@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +15,34 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+    // // Call the Role and Permission Seeder first
+    // $this->call(RolesAndPermissionsSeeder::class);
+
+    // Create an Admin user
+    $admin = User::create([
+        'name' => 'Admin User',
+        'email' => 'admin@example.com',
+        'password' => Hash::make('password'), 
+    ]);
+    $admin->assignRole('admin');
+
+    // Create a Mentor user
+    $mentor = User::create([
+        'name' => 'Mentor User',
+        'email' => 'mentor@example.com',
+        'password' => Hash::make('password'),
+    ]);
+    $mentor->assignRole('mentor');
+
+    // Create a Student user
+    $student = User::create([
+        'name' => 'Student User',
+        'email' => 'student@example.com',
+        'password' => Hash::make('password'),
+    ]);
+    $student->assignRole('student');
+
+    
     }
 }
