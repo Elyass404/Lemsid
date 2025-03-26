@@ -7,6 +7,8 @@ use App\Http\Controllers\api\V1\TagController;
 use App\Http\Controllers\api\V2\AuthController;
 use App\Http\Controllers\api\V1\CourseController;
 use App\Http\Controllers\api\V1\CategoryController;
+use App\Http\Controllers\api\V2\EnrollmentController;
+
 
 
 Route::get('/user', function (Request $request) {
@@ -46,9 +48,10 @@ Route::group(["prefix"=>"V2",'middleware' => ['auth:sanctum']],function (){
     // student only routes
     Route::middleware('role:student')->group(function () {
         Route::get('Course', [CourseController::class, 'index']);
+        Route::post('Enroll', [EnrollmentController::class, 'store']);
         
+    
     });
-
 
     Route::post('auth/refresh',[AuthController::class, "refreshToken"]);
     

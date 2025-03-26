@@ -26,4 +26,12 @@ class Course extends Model
     public function tags(){
         return $this->belongsToMany(Tag::class, 'course_tag');
     }
+
+    public function enrollments(){
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function studentes(){
+        return $this->belongsToMany(User::class,"enrollments");
+    }
 }
